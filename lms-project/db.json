@@ -1,0 +1,356 @@
+{
+    "books": [
+        
+    {
+        "id": 1,
+        "title": "The Great Gatsby",
+        "author": "F. Scott Fitzgerald",
+        "year": 1925,
+        "genre": "Fiction",
+        "isbn": ["9780743273565", "9780743273566", "9780743273567", "9780743273568", "9780743273569", "9780743273570"],
+        "isAvailable": true,
+        "rent": 56,
+        "image": "https://tse4.mm.bing.net/th/id/OIP.fFaX7nKq5_5gf2nSI3QEUgHaLK?rs=1&pid=ImgDetMain&o=7&rm=3"
+    },
+    {
+        "id": 2,
+        "title": "To Kill a Mockingbird",
+        "author": "Harper Lee",
+        "year": 1960,
+        "genre": "Fiction",
+        "isbn": ["9780061120084", "9780061120085", "9780061120086", "9780061120087", "9780061120088", "9780061120089"],
+        "isAvailable": false,
+        "rent": 48,
+        "image": "https://cdn2.penguin.com.au/covers/original/9781784870799.jpg"
+    },
+    {
+        "id": 3,
+        "title": "1984",
+        "author": "George Orwell",
+        "year": 1949,
+        "genre": "Dystopian Fiction",
+        "isbn": ["9780451524935", "9780451524936", "9780451524937", "9780451524938", "9780451524939", "9780451524940"],
+        "isAvailable": true,
+        "rent": 63,
+        "image": "https://tse4.mm.bing.net/th/id/OIP.8bTpGDLEYVpDlV8tD10XlQAAAA?rs=1&pid=ImgDetMain&o=7&rm=3"
+    },
+    {
+        "id": 4,
+        "title": "Pride and Prejudice",
+        "author": "Jane Austen",
+        "year": 1813,
+        "genre": "Romance",
+        "isbn": ["9780486284736", "9780486284737", "9780486284738", "9780486284739", "9780486284740", "9780486284741"],
+        "isAvailable": true,
+        "rent": 36,
+        "image": "https://static.faber.co.uk/wp-content/uploads/2022/09/Pride-and-Prejudice.jpg"
+    },
+    {
+        "id": 5,
+        "title": "The Hobbit",
+        "author": "J.R.R. Tolkien",
+        "year": 1937,
+        "genre": "Fantasy",
+        "isbn": ["9780345339683", "9780345339684", "9780345339685", "9780345339686", "9780345339687", "9780345339688"],
+        "isAvailable": false,
+        "rent": 75,
+        "image": "https://i.pinimg.com/originals/82/19/db/8219db02f6ab686039fa783cce657794.jpg"
+    },
+    {
+        "id": 6,
+        "title": "Fahrenheit 451",
+        "author": "Ray Bradbury",
+        "year": 1953,
+        "genre": "Dystopian Fiction",
+        "isbn": ["9781451673319", "9781451673320", "9781451673321", "9781451673322", "9781451673323", "9781451673324"],
+        "isAvailable": true,
+        "rent": 58,
+        "image": "https://cdn.kobo.com/book-images/5b0e8d40-d40b-4ef3-a7a2-819e4b065f5c/1200/1200/False/fahrenheit-451-2.jpg"
+    },
+    {
+        "id": 7,
+        "title": "Moby-Dick",
+        "author": "Herman Melville",
+        "year": 1851,
+        "genre": "Adventure Fiction",
+        "isbn": ["9780142437247", "9780142437248", "9780142437249", "9780142437250", "9780142437251", "9780142437252"],
+        "isAvailable": true,
+        "rent": 43,
+        "image": "https://tse4.mm.bing.net/th/id/OIP.TP3Z8f_8cYTDcPcBgWYFtwHaJl?rs=1&pid=ImgDetMain&o=7&rm=3"
+    },
+    {
+        "id": 8,
+        "title": "The Catcher in the Rye",
+        "author": "J.D. Salinger",
+        "year": 1951,
+        "genre": "Coming-of-age Fiction",
+        "isbn": ["9780316769488", "9780316769489", "9780316769490", "9780316769491", "9780316769492", "9780316769493"],
+        "isAvailable": false,
+        "rent": 55,
+        "image": "https://cdn.britannica.com/94/181394-050-2F76F7EE/Reproduction-cover-edition-The-Catcher-in-the.jpg"
+    },
+    {
+        "id": 9,
+        "title": "The Lord of the Rings",
+        "author": "J.R.R. Tolkien",
+        "year": 1954,
+        "genre": "Fantasy",
+        "isbn": ["9780618640157", "9780618640158", "9780618640159", "9780618640160", "9780618640161", "9780618640162"],
+        "isAvailable": true,
+        "rent": 96,
+        "image": "https://cdn11.bigcommerce.com/s-gibnfyxosi/images/stencil/1920w/products/154740/156431/51eq24cRtRL__98083.1615576774.jpg?c=1"
+    },
+    {
+        "id": 10,
+        "title": "Jane Eyre",
+        "author": "Charlotte Brontë",
+        "year": 1847,
+        "genre": "Gothic Fiction",
+        "isbn": ["9780141441146", "9780141441147", "9780141441148", "9780141441149", "9780141441150", "9780141441151"],
+        "isAvailable": true,
+        "rent": 38,
+        "image": "https://d28hgpri8am2if.cloudfront.net/book_images/cvr9781416500247_9781416500247_hr.jpg"
+    },
+    {
+        "id": 11,
+        "title": "The Chronicles of Narnia",
+        "author": "C.S. Lewis",
+        "year": 1950,
+        "genre": "Fantasy",
+        "isbn": ["9780064471190", "9780064471191", "9780064471192", "9780064471193", "9780064471194", "9780064471195"],
+        "isAvailable": false,
+        "rent": 60,
+        "image": "https://cdn.kobo.com/book-images/b59a5fd0-fcbf-4353-ae7f-6bea954fbb6b/1200/1200/False/the-chronicles-of-narnia-complete-7-book-collection-2.jpg"
+    },
+    {
+        "id": 12,
+        "title": "Wuthering Heights",
+        "author": "Emily Brontë",
+        "year": 1847,
+        "genre": "Gothic Fiction",
+        "isbn": ["9780141439556", "9780141439557", "9780141439558", "9780141439559", "9780141439560", "9780141439561"],
+        "isAvailable": true,
+        "rent": 40,
+        "image": "https://images.thenile.io/r1000/9781911238041.jpg"
+    },
+    {
+        "id": 13,
+        "title": "The Hitchhiker's Guide to the Galaxy",
+        "author": "Douglas Adams",
+        "year": 1979,
+        "genre": "Science Fiction",
+        "isbn": ["9780345391803", "9780345391804", "9780345391805", "9780345391806", "9780345391807", "9780345391808"],
+        "isAvailable": true,
+        "rent": 69,
+        "image": "https://tse3.mm.bing.net/th/id/OIP.6lE_KV_vkckc3Ey-TSvHuwHaLJ?rs=1&pid=ImgDetMain&o=7&rm=3"
+    },
+    {
+        "id": 14,
+        "title": "Don Quixote",
+        "author": "Miguel de Cervantes",
+        "year": 1605,
+        "genre": "Satire",
+        "isbn": ["9780060935100", "9780060935101", "9780060935102", "9780060935103", "9780060935104", "9780060935105"],
+        "isAvailable": true,
+        "rent": 45,
+        "image": "https://cdn.kobo.com/book-images/b2ece927-6fe1-40fd-8ee2-681e9c3fe4c3/1200/1200/False/don-quixote-101.jpg"
+    },
+    {
+        "id": 15,
+        "title": "Brave New World",
+        "author": "Aldous Huxley",
+        "year": 1932,
+        "genre": "Dystopian Fiction",
+        "isbn": ["9780060850526", "9780060850527", "9780060850528", "9780060850529", "9780060850530", "9780060850531"],
+        "isAvailable": false,
+        "rent": 53,
+        "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1664255354i/62803712.jpg"
+    },
+    {
+        "id": 16,
+        "title": "The Picture of Dorian Gray",
+        "author": "Oscar Wilde",
+        "year": 1890,
+        "genre": "Gothic Fiction",
+        "isbn": ["9780486277073", "9780486277074", "9780486277075", "9780486277076", "9780486277077", "9780486277078"],
+        "isAvailable": true,
+        "rent": 40,
+        "image": "https://images-na.ssl-images-amazon.com/images/I/71ZpShPyThL.jpg"
+    },
+    {
+        "id": 17,
+        "title": "Frankenstein",
+        "author": "Mary Shelley",
+        "year": 1818,
+        "genre": "Gothic Fiction",
+        "isbn": ["9780486282114", "9780486282115", "9780486282116", "9780486282117", "9780486282118", "9780486282119"],
+        "isAvailable": true,
+        "rent": 45,
+        "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1666719737i/63099538.jpg"
+    },
+    {
+        "id": 18,
+        "title": "The Odyssey",
+        "author": "Homer",
+        "year": -800,
+        "genre": "Epic Poetry",
+        "isbn": ["9780140268867", "9780140268868", "9780140268869", "9780140268870", "9780140268871", "9780140268872"],
+        "isAvailable": true,
+        "rent": 68,
+        "image": "https://tse3.mm.bing.net/th/id/OIP.gwQXQfHy67MVMSM0h4QEtgHaLH?rs=1&pid=ImgDetMain&o=7&rm=3"
+    },
+    {
+        "id": 19,
+        "title": "Crime and Punishment",
+        "author": "Fyodor Dostoevsky",
+        "year": 1866,
+        "genre": "Psychological Fiction",
+        "isbn": ["9780486415840", "9780486415841", "9780486415842", "9780486415843", "9780486415844", "9780486415845"],
+        "isAvailable": false,
+        "rent": 55,
+        "image": "https://tse1.mm.bing.net/th/id/OIP.SYX0cGjw3PNC1XQaZqlk7gAAAA?rs=1&pid=ImgDetMain&o=7&rm=3"
+    },
+    {
+        "id": 20,
+        "title": "Alice's Adventures in Wonderland",
+        "author": "Lewis Carroll",
+        "year": 1865,
+        "genre": "Fantasy",
+        "isbn": ["9780486275437", "9780486275438", "9780486275439", "9780486275440", "9780486275441", "9780486275442"],
+        "isAvailable": true,
+        "rent": 42,
+        "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1660576490i/61984544.jpg"
+    },
+    {
+        "id": 21,
+        "title": "The Count of Monte Cristo",
+        "author": "Alexandre Dumas",
+        "year": 1844,
+        "genre": "Adventure Fiction",
+        "isbn": ["9780140449266", "9780140449267", "9780140449268", "9780140449269", "9780140449270", "9780140449271"],
+        "isAvailable": true,
+        "rent": 65,
+        "image": "https://mpd-biblio-covers.imgix.net/9781509827978.jpg"
+    },
+    {
+        "id": 22,
+        "title": "The Alchemist",
+        "author": "Paulo Coelho",
+        "year": 1988,
+        "genre": "Fantasy",
+        "isbn": ["9780062315007", "9780062315008", "9780062315009", "9780062315010", "9780062315011", "9780062315012"],
+        "isAvailable": true,
+        "rent": 48,
+        "image": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1654371463i/18144590.jpg"
+    },
+    {
+        "id": 23,
+        "title": "One Hundred Years of Solitude",
+        "author": "Gabriel García Márquez",
+        "year": 1967,
+        "genre": "Magical Realism",
+        "isbn": ["9780060883289", "9780060883290", "9780060883291", "9780060883292", "9780060883293", "9780060883294"],
+        "isAvailable": false,
+        "rent": 70,
+        "image": "https://tse1.mm.bing.net/th/id/OIP.9aNy2UMcU1veIzYn--agwAHaLH?rs=1&pid=ImgDetMain&o=7&rm=3"
+    },
+    {
+        "id": 24,
+        "title": "Anna Karenina",
+        "author": "Leo Tolstoy",
+        "year": 1878,
+        "genre": "Realism",
+        "isbn": ["9780486415857", "9780486415858", "9780486415859", "9780486415860", "9780486415861", "9780486415862"],
+        "isAvailable": true,
+        "rent": 50,
+        "image": "https://wordsworth-editions.com/wp-content/uploads/2023/08/9781853262715.jpg"
+    },
+    {
+        "id": 25,
+        "title": "Ulysses",
+        "author": "James Joyce",
+        "year": 1922,
+        "genre": "Modernist",
+        "isbn": ["9780679722762", "9780679722763", "9780679722764", "9780679722765", "9780679722766", "9780679722767"],
+        "isAvailable": true,
+        "rent": 70,
+        "image": "https://th.bing.com/th/id/R.3dfa56d8f7be76bc2799b31e01a1e156?rik=Ouow54sQK2fgBA&riu=http%3a%2f%2f3.bp.blogspot.com%2f-_BbxzklrxUQ%2fUc28BUbriOI%2fAAAAAAAAAkU%2fKqRcl_VpM3U%2fs1020%2fUlysse.jpg&ehk=PDebdPxMN%2bNMyssfZAcwIIDPqnaQJ7S5iG%2fj0tGm39M%3d&risl=&pid=ImgRaw&r=0"
+    },
+    {
+        "id": 26,
+        "title": "War and Peace",
+        "author": "Leo Tolstoy",
+        "year": 1869,
+        "genre": "Historical Fiction",
+        "isbn": ["9780140449267", "9780140449268", "9780140449269", "9780140449270", "9780140449271", "9780140449272"],
+        "isAvailable": false,
+        "rent": 85,
+        "image": "https://cdn.kobo.com/book-images/3ac03eac-d437-47e3-9b15-52542edabd56/1200/1200/False/war-and-peace-34.jpg"
+    },
+    {
+        "id": 27,
+        "title": "The Divine Comedy",
+        "author": "Dante Alighieri",
+        "year": 1320,
+        "genre": "Epic Poetry",
+        "isbn": ["9780140449268", "9780140449269", "9780140449270", "9780140449271", "9780140449272", "9780140449273"],
+        "isAvailable": true,
+        "rent": 60,
+        "image": "https://m.media-amazon.com/images/I/51i-9SGWr-L._AC_UF1000,1000_QL80_.jpg"
+    },
+    {
+        "id": 28,
+        "title": "The Shining",
+        "author": "Stephen King",
+        "year": 1977,
+        "genre": "Horror",
+        "isbn": ["9780345806789", "9780345806790", "9780345806791", "9780345806792", "9780345806793", "9780345806794"],
+        "isAvailable": true,
+        "rent": 65,
+        "image": "https://i.pinimg.com/originals/69/fa/f6/69faf6227f1dce2aecc8b9cfa45a423d.png"
+    },
+    {
+        "id": 29,
+        "title": "Catch-22",
+        "author": "Joseph Heller",
+        "year": 1961,
+        "genre": "Satirical Fiction",
+        "isbn": ["9781451626650", "9781451626651", "9781451626652", "9781451626653", "9781451626654", "9781451626655"],
+        "isAvailable": false,
+        "rent": 58,
+        "image": "https://www.studypool.com/images/studyGuides/Catch-22/Book_Cover.jpg"
+    },
+    {
+        "id": 30,
+        "title": "Les Misérables",
+        "author": "Victor Hugo",
+        "year": 1862,
+        "genre": "Historical Fiction",
+        "isbn": ["9780451419430", "9780451419431", "9780451419432", "9780451419433", "9780451419434", "9780451419435"],
+        "isAvailable": true,
+        "rent": 62,
+        "image": "https://tse4.mm.bing.net/th/id/OIP.Sg_Emf-MkUJZpZx4RzKQTQHaL4?rs=1&pid=ImgDetMain&o=7&rm=3"
+    }
+]
+    ,
+    "members":[
+        {
+
+        }
+    ],
+    "issuedBooks":[
+        {
+
+        }
+    ],
+    "fine": [
+        {
+
+        }
+    ],
+    "reservations":[
+        {
+
+        }
+    ]
+}
