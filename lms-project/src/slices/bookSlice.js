@@ -11,6 +11,12 @@ export const fetchBooks = createAsyncThunk("books/fetchBooks", async () => {
   const response = await axios.get(base_api);
   return response.data;
 });
+// Here We Will Delete Books By Api
+export const deleteBook = createAsyncThunk("books/deleteBook", async (bookId) => {
+  await axios.delete(`${base_api}/${bookId}`);
+  return bookId;
+});
+
 
 const bookSlice = createSlice({
   name: "books",
@@ -35,7 +41,27 @@ const bookSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       });
+
+    ///Delete Request/////
+    builder
+      .addCase(deleteBook.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deleteBook.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.books = state.books.filter((book) => book.id !== action.payload);
+      })
+      .addCase(deleteBook.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      });
   },
 });
+
+
+
+
+
+
 
 export default bookSlice.reducer;

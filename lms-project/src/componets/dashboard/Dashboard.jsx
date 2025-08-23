@@ -1,35 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { FiMenu, FiBookOpen, FiHome, FiSettings, FiLogOut, FiX, FiUsers, FiBarChart2, FiPlusCircle } from "react-icons/fi";
 import { motion, AnimatePresence } from 'framer-motion';
-import BookList from '../Booklist/BookList';
+import { Bookmark, CreditCard } from "lucide-react";
+import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
+import { fetchMembers } from './../../slices/membersSlice';
+import { fetchBooks
+  } from '../../slices/bookSlice';    
 
 const Dashboard = () => {
   const { books } = useSelector((state) => state.books);
+  const { members } = useSelector((state) => state.members);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState('dashboard');
   const [stats, setStats] = useState({
     totalBooks: 0,
     availableBooks: 0,
     borrowedBooks: 0,
-    users: 0
+    totalMembers: 0
   });
 
-  // Calculate stats from books data
+  // Get active tab from current URL path
+  const pathSegments = location.pathname.split('/');
+  const activeTab = pathSegments[pathSegments.length - 1] || 'dashboard';
+
+  // Fetch members when component mounts
+  useEffect(() => {
+    dispatch(fetchMembers());
+    dispatch(fetchBooks());
+  }, [dispatch]);
+
+  // Calculate stats from books and members data
   useEffect(() => {
     if (books) {
       const totalBooks = books.length;
       const availableBooks = books.filter(book => book.status === 'available').length;
       const borrowedBooks = books.filter(book => book.status === 'borrowed').length;
+      const totalMembers = members.length;
       
       setStats({
-        totalBooks,
+        totalBooks, 
         availableBooks,
         borrowedBooks,
-        users: Math.floor(totalBooks * 0.7) // Mock user count
+        totalMembers,
       });
     }
-  }, [books]);
+  }, [books, members]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -54,36 +73,19 @@ const Dashboard = () => {
     }
   };
 
-  const contentVariants = {
-    open: { 
-      marginLeft: "0rem",
-      transition: { 
-        type: "spring", 
-        damping: 20, 
-        stiffness: 200 
-      } 
-    },
-    closed: { 
-      marginLeft: "0rem",
-      transition: { 
-        type: "spring", 
-        damping: 20, 
-        stiffness: 200 
-      } 
-    }
-  };
-
   const statCardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
   };
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: <FiHome size={20} /> },
-    { id: 'books', label: 'Books', icon: <FiBookOpen size={20} /> },
-    { id: 'users', label: 'Users', icon: <FiUsers size={20} /> },
-    { id: 'reports', label: 'Reports', icon: <FiBarChart2 size={20} /> },
-    { id: 'settings', label: 'Settings', icon: <FiSettings size={20} /> },
+    { id: 'dashboard', label: 'Dashboard', icon: <FiHome size={20} />, path: '/dashboard' },
+    { id: 'books', label: 'Books', icon: <FiBookOpen size={20} />, path: '/dashboard/books' },
+    { id: 'members', label: 'Members', icon: <FiUsers size={20} />, path: '/dashboard/members' },
+    { id: 'reports', label: 'Reports', icon: <FiBarChart2 size={20} />, path: '/dashboard/reports' },
+    { id: 'settings', label: 'Settings', icon: <FiSettings size={20} />, path: '/dashboard/settings' },
+    { id: 'reservations', label: "Reservations", icon: <Bookmark className="w-5 h-5" />, path: '/dashboard/reservations' },
+    { id: 'fines', label: "Fines", icon: <CreditCard className="w-5 h-5" />, path: '/dashboard/fines' },
   ];
 
   return (
@@ -106,7 +108,8 @@ const Dashboard = () => {
         variants={sidebarVariants}
         initial="open"
         animate={isSidebarOpen ? "open" : "closed"}
-        className="w-64 bg-indigo-700 text-white shadow-lg flex flex-col fixed lg:relative h-screen z-30"
+        className={`bg-indigo-700 text-white shadow-lg flex flex-col fixed lg:static h-screen z-30 overflow-y-auto transition-all duration-300
+          ${isSidebarOpen ? 'w-64' : 'w-0 lg:w-16'}`}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-indigo-600">
           <motion.h2 
@@ -116,50 +119,46 @@ const Dashboard = () => {
             className="text-xl font-bold tracking-tight flex items-center"
           >
             <span className="mr-2">📚</span> 
-            <span>BookDash Admin</span>
+            {isSidebarOpen && <span>BookDash Admin</span>}
           </motion.h2>
-          <button 
-            className="p-2 rounded-lg hover:bg-indigo-600 transition-colors"
-            onClick={toggleSidebar}
-          >
-            <FiX size={20} />
-          </button>
+          {isSidebarOpen && (
+            <button 
+              className="p-2 rounded-lg hover:bg-indigo-600 transition-colors"
+              onClick={toggleSidebar}
+            >
+              <FiX size={20} />
+            </button>
+          )}
         </div>
 
         <nav className="flex-1 px-3 py-6 space-y-1">
-          {navItems.map((item, index) => (
-            <motion.a
+          {navItems.map((item) => (
+            <Link
               key={item.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
+              to={item.path}
               className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-colors cursor-pointer ${activeTab === item.id ? 'bg-indigo-600' : 'hover:bg-indigo-600'}`}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => window.innerWidth < 1024 && setIsSidebarOpen(false)}
             >
               {item.icon}
-              <span>{item.label}</span>
-            </motion.a>
+              {isSidebarOpen && <span>{item.label}</span>}
+            </Link>
           ))}
         </nav>
 
         <div className="px-3 py-4 border-t border-indigo-600">
-          <motion.a 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-indigo-600 transition-colors cursor-pointer"
+          <button 
+            className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-indigo-600 transition-colors cursor-pointer w-full"
+            onClick={() => navigate('/login')}
           >
             <FiLogOut size={20} />
-            <span>Logout</span>
-          </motion.a>
+            {isSidebarOpen && <span>Logout</span>}
+          </button>
         </div>
       </motion.aside>
 
       {/* Main Content */}
-      <motion.main 
-        variants={contentVariants}
-        animate={isSidebarOpen ? "open" : "closed"}
-        className="flex-1 p-8 overflow-y-auto transition-all duration-300"
+      <main 
+        className={`flex-1 p-8 overflow-y-auto transition-all duration-300 ${isSidebarOpen ? 'lg:ml-0' : 'lg:ml-0'}`}
       >
         {/* Floating Menu Button for Closed Sidebar */}
         {!isSidebarOpen && (
@@ -190,17 +189,18 @@ const Dashboard = () => {
             </h1>
           </div>
           
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
-          >
-            <FiPlusCircle size={18} />
-            <span>Add New Book</span>
-          </motion.button>
+          {(activeTab === 'books' || activeTab === 'members') && (
+            <Link 
+              to={activeTab === 'books' ? '/dashboard/add-book' : '/dashboard/manage-members'}
+              className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
+            >
+              <FiPlusCircle size={18} />
+              <span>{activeTab === 'books' ? 'Add New Book' : 'Add New Member'}</span>
+            </Link>
+          )}
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Cards for Dashboard */}
         {activeTab === 'dashboard' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <motion.div 
@@ -242,8 +242,8 @@ const Dashboard = () => {
               transition={{ delay: 0.3 }}
               className="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500"
             >
-              <h3 className="text-gray-500 text-sm font-semibold mb-2">Total Users</h3>
-              <p className="text-3xl font-bold text-gray-800">{stats.users}</p>
+              <h3 className="text-gray-500 text-sm font-semibold mb-2">Total Members</h3>
+              <p className="text-3xl font-bold text-gray-800">{stats.totalMembers}</p>
             </motion.div>
           </div>
         )}
@@ -255,7 +255,12 @@ const Dashboard = () => {
           transition={{ duration: 0.5 }}
           className="bg-white p-6 rounded-xl shadow-md"
         >
-          {activeTab === 'books' && <BookList />}
+          {/* Only show Outlet for routes that have components */}
+          {activeTab !== 'dashboard' && activeTab !== 'reservations' && activeTab !== 'fines' && (
+            <Outlet />
+          )}
+          
+          {/* Show dashboard content */}
           {activeTab === 'dashboard' && (
             <div>
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h2>
@@ -298,11 +303,31 @@ const Dashboard = () => {
               </div>
             </div>
           )}
-          {activeTab === 'users' && <div>Users management content</div>}
-          {activeTab === 'reports' && <div>Reports and analytics content</div>}
-          {activeTab === 'settings' && <div>Settings panel content</div>}
+          
+          {/* Placeholder content for Reservations and Fines */}
+          {activeTab === 'reservations' && (
+            <div>
+              <h2 className="text-2xl font-bold mb-4">Reservations Management</h2>
+              <p className="text-gray-600">This section will contain all book reservation information and management tools.</p>
+              <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                <h3 className="text-lg font-semibold mb-2">Coming Soon</h3>
+                <p>Reservation management features are currently under development.</p>
+              </div>
+            </div>
+          )}
+          
+          {activeTab === 'fines' && (
+            <div>
+              <h2 className="text-2xl font-bold mb-4">Fines Management</h2>
+              <p className="text-gray-600">This section will contain all fine-related information and payment processing.</p>
+              <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                <h3 className="text-lg font-semibold mb-2">Coming Soon</h3>
+                <p>Fine management features are currently under development.</p>
+              </div>
+            </div>
+          )}
         </motion.div>
-      </motion.main>
+      </main>
     </div>
   );
 };
