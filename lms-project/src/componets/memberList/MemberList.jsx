@@ -113,7 +113,7 @@ const MemberList = () => {
                     View Profile
                   </button>
                   <button className="flex-1 py-2 px-4 rounded-xl bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors shadow-md hover:shadow-lg">
-                    Message
+                    Edit
                   </button>
                 </div>
               </div>

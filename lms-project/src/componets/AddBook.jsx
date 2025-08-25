@@ -324,7 +324,6 @@ const AddBook = () => {
           />
         </div>
 
-        {/* Form Actions */}
         <div className="mt-8 flex justify-end space-x-3">
           <button
             type="button"

@@ -5,8 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Bookmark, CreditCard } from "lucide-react";
 import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
 import { fetchMembers } from './../../slices/membersSlice';
-import { fetchBooks
-  } from '../../slices/bookSlice';    
+import { fetchBooks } from '../../slices/bookSlice';    
 
 const Dashboard = () => {
   const { books } = useSelector((state) => state.books);
@@ -103,13 +102,14 @@ const Dashboard = () => {
         )}
       </AnimatePresence>
 
-      {/* Sidebar */}
+      {/* Sidebar - Fixed position to prevent scrolling */}
       <motion.aside 
         variants={sidebarVariants}
         initial="open"
         animate={isSidebarOpen ? "open" : "closed"}
-        className={`bg-indigo-700 text-white shadow-lg flex flex-col fixed lg:static h-screen z-30 overflow-y-auto transition-all duration-300
+        className={`bg-indigo-700 text-white shadow-lg flex flex-col fixed h-screen z-30 overflow-y-auto transition-all duration-300
           ${isSidebarOpen ? 'w-64' : 'w-0 lg:w-16'}`}
+        style={{ position: 'fixed' }} // Ensure it's fixed
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-indigo-600">
           <motion.h2 
@@ -156,9 +156,9 @@ const Dashboard = () => {
         </div>
       </motion.aside>
 
-      {/* Main Content */}
+      {/* Main Content - Add margin to account for sidebar */}
       <main 
-        className={`flex-1 p-8 overflow-y-auto transition-all duration-300 ${isSidebarOpen ? 'lg:ml-0' : 'lg:ml-0'}`}
+        className={`flex-1 p-8 overflow-y-auto transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : 'lg:ml-16'}`}
       >
         {/* Floating Menu Button for Closed Sidebar */}
         {!isSidebarOpen && (
