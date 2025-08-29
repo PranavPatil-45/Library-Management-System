@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMembers } from '../../slices/membersSlice';
+import { Link } from 'react-router-dom';
 const MemberList = () => {
   const { members, loading, error } = useSelector((state) => state.members);
   const dispatch = useDispatch();
@@ -109,9 +110,13 @@ const MemberList = () => {
                 </div>
 
                 <div className="flex space-x-3">
-                  <button className="flex-1 py-2 px-4 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors shadow-md hover:shadow-lg">
-                    View Profile
-                  </button>
+                 <Link
+  to={`/dashboard/member/${member.id}`}
+  className="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-700 hover:shadow-lg transition-all duration-200 font-medium"
+>
+  View Details
+</Link>
+
                   <button className="flex-1 py-2 px-4 rounded-xl bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition-colors shadow-md hover:shadow-lg">
                     Edit
                   </button>

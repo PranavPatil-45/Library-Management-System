@@ -12,6 +12,7 @@ import Members from './componets/Members';
 import Home from './screens/Home';
 import Reservation from './componets/Reservation';
 import Fines from './componets/Fines';
+import MemberDescription from './componets/MembersDesc';
 import './App.css';
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
               <Route path="manage-members" element={<Members />} />
             <Route path="reservations" element={<Reservation />} />
             <Route path="fines" element={<Fines />} />
+            <Route path="/dashboard/member/:id" element={<MemberDescription />} />
           </Route>
         </Routes>
       </div>
