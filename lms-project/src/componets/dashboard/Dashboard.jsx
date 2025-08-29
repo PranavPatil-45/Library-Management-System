@@ -185,7 +185,7 @@ const Dashboard = () => {
               <FiMenu size={20} />
             </button>
             <h1 className="text-3xl font-bold text-gray-800">
-              {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Overview
+              {activeTab.charAt().toUpperCase() + activeTab.slice(1)} Overview
             </h1>
           </div>
           
