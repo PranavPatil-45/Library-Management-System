@@ -80,7 +80,7 @@ const MemberList = () => {
                 {member.image ? (
                   <img
                     src={member.image}
-                    alt={member.name}
+                    alt={member.firstname}
                     className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                   />
                 ) : (
@@ -91,9 +91,9 @@ const MemberList = () => {
               {/* Member Info */}
               <div className="p-6">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-indigo-600 transition-colors">
-                  {member.name}
+                  {member.firstname} {member.lastname}
                 </h3>
-                <p className="text-gray-600 mb-2">{member.email}</p>
+                <p className="text-gray-600 mb-2">{member.firstName} {member.lastName}</p>
                 <p className="text-gray-600 mb-4">Member since: {new Date(member.joinDate).toLocaleDateString()}</p>
                 
                 <div className="flex justify-between items-center mb-6">

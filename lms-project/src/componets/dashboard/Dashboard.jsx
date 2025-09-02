@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { FiMenu, FiBookOpen, FiHome, FiSettings, FiLogOut, FiX, FiUsers, FiBarChart2, FiPlusCircle } from "react-icons/fi";
+import {
+  FiMenu, FiBookOpen, FiHome, FiSettings,
+  FiLogOut, FiX, FiUsers, FiBarChart2, FiPlusCircle
+} from "react-icons/fi";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bookmark, CreditCard } from "lucide-react";
 import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
 import { fetchMembers } from './../../slices/membersSlice';
 import { fetchBooks } from '../../slices/bookSlice';    
+import {
+  ResponsiveContainer, PieChart, Pie, Cell,
+  BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip,
+  LineChart, Line, Legend
+} from "recharts";
 
 const Dashboard = () => {
   const { books } = useSelector((state) => state.books);
@@ -22,17 +30,17 @@ const Dashboard = () => {
     totalMembers: 0
   });
 
-  // Get active tab from current URL path
+  // Get active tab
   const pathSegments = location.pathname.split('/');
   const activeTab = pathSegments[pathSegments.length - 1] || 'dashboard';
 
-  // Fetch members when component mounts
+  // Fetch members & books
   useEffect(() => {
     dispatch(fetchMembers());
     dispatch(fetchBooks());
   }, [dispatch]);
 
-  // Calculate stats from books and members data
+  // Calculate stats
   useEffect(() => {
     if (books) {
       const totalBooks = books.length;
@@ -54,22 +62,8 @@ const Dashboard = () => {
   };
 
   const sidebarVariants = {
-    open: { 
-      x: 0, 
-      transition: { 
-        type: "spring", 
-        damping: 20, 
-        stiffness: 200 
-      } 
-    },
-    closed: { 
-      x: "-100%", 
-      transition: { 
-        type: "spring", 
-        damping: 20, 
-        stiffness: 200 
-      } 
-    }
+    open: { x: 0, transition: { type: "spring", damping: 20, stiffness: 200 } },
+    closed: { x: "-100%", transition: { type: "spring", damping: 20, stiffness: 200 } }
   };
 
   const statCardVariants = {
@@ -87,6 +81,16 @@ const Dashboard = () => {
     { id: 'fines', label: "Fines", icon: <CreditCard className="w-5 h-5" />, path: '/dashboard/fines' },
   ];
 
+  // Dummy monthly trend for line chart
+  const monthlyData = [
+    { month: 'Jan', books: 20, members: 10 },
+    { month: 'Feb', books: 35, members: 15 },
+    { month: 'Mar', books: 25, members: 18 },
+    { month: 'Apr', books: 40, members: 22 },
+    { month: 'May', books: 50, members: 30 },
+    { month: 'Jun', books: 45, members: 28 },
+  ];
+
   return (
     <div className="min-h-screen flex bg-gray-50">
       {/* Mobile Overlay */}
@@ -102,14 +106,13 @@ const Dashboard = () => {
         )}
       </AnimatePresence>
 
-      {/* Sidebar - Fixed position to prevent scrolling */}
+      {/* Sidebar */}
       <motion.aside 
         variants={sidebarVariants}
         initial="open"
         animate={isSidebarOpen ? "open" : "closed"}
         className={`bg-indigo-700 text-white shadow-lg flex flex-col fixed h-screen z-30 overflow-y-auto transition-all duration-300
           ${isSidebarOpen ? 'w-64' : 'w-0 lg:w-16'}`}
-        style={{ position: 'fixed' }} // Ensure it's fixed
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-indigo-600">
           <motion.h2 
@@ -156,11 +159,9 @@ const Dashboard = () => {
         </div>
       </motion.aside>
 
-      {/* Main Content - Add margin to account for sidebar */}
-      <main 
-        className={`flex-1 p-8 overflow-y-auto transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : 'lg:ml-16'}`}
-      >
-        {/* Floating Menu Button for Closed Sidebar */}
+      {/* Main Content */}
+      <main className={`flex-1 p-8 overflow-y-auto transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : 'lg:ml-16'}`}>
+        {/* Floating Menu */}
         {!isSidebarOpen && (
           <motion.button
             initial={{ opacity: 0, x: -10 }}
@@ -200,111 +201,128 @@ const Dashboard = () => {
           )}
         </div>
 
-        {/* Stats Cards for Dashboard */}
+        {/* Stats Cards */}
         {activeTab === 'dashboard' && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <motion.div 
-              variants={statCardVariants}
-              initial="hidden"
-              animate="visible"
-              className="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500"
-            >
+            <motion.div variants={statCardVariants} initial="hidden" animate="visible" className="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
               <h3 className="text-gray-500 text-sm font-semibold mb-2">Total Books</h3>
               <p className="text-3xl font-bold text-gray-800">{stats.totalBooks}</p>
             </motion.div>
-            
-            <motion.div 
-              variants={statCardVariants}
-              initial="hidden"
-              animate="visible"
-              transition={{ delay: 0.1 }}
-              className="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500"
-            >
+            <motion.div variants={statCardVariants} initial="hidden" animate="visible" transition={{ delay: 0.1 }} className="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
               <h3 className="text-gray-500 text-sm font-semibold mb-2">Available Books</h3>
               <p className="text-3xl font-bold text-gray-800">{stats.availableBooks}</p>
             </motion.div>
-            
-            <motion.div 
-              variants={statCardVariants}
-              initial="hidden"
-              animate="visible"
-              transition={{ delay: 0.2 }}
-              className="bg-white p-6 rounded-xl shadow-md border-l-4 border-yellow-500"
-            >
+            <motion.div variants={statCardVariants} initial="hidden" animate="visible" transition={{ delay: 0.2 }} className="bg-white p-6 rounded-xl shadow-md border-l-4 border-yellow-500">
               <h3 className="text-gray-500 text-sm font-semibold mb-2">Borrowed Books</h3>
               <p className="text-3xl font-bold text-gray-800">{stats.borrowedBooks}</p>
             </motion.div>
-            
-            <motion.div 
-              variants={statCardVariants}
-              initial="hidden"
-              animate="visible"
-              transition={{ delay: 0.3 }}
-              className="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500"
-            >
+            <motion.div variants={statCardVariants} initial="hidden" animate="visible" transition={{ delay: 0.3 }} className="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
               <h3 className="text-gray-500 text-sm font-semibold mb-2">Total Members</h3>
               <p className="text-3xl font-bold text-gray-800">{stats.totalMembers}</p>
             </motion.div>
           </div>
         )}
 
-        {/* Content based on active tab */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white p-6 rounded-xl shadow-md"
-        >
-          {/* Only show Outlet for routes that have components */}
-          {activeTab !== 'dashboard' && activeTab !== 'reservations' && activeTab !== 'fines' && (
-            <Outlet />
-          )}
+        {/* Content */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="bg-white p-6 rounded-xl shadow-md">
+          {activeTab !== 'dashboard' && activeTab !== 'reservations' && activeTab !== 'fines' && <Outlet />}
           
-          {/* Show dashboard content */}
+          {/* Dashboard Content */}
           {activeTab === 'dashboard' && (
-            <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Activity</h2>
-              <p className="text-gray-600">Your admin dashboard overview will go here with charts, graphs, and recent activities.</p>
-              
-              {/* Sample activity list */}
-              <div className="mt-6 space-y-4">
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="flex items-center p-3 bg-gray-50 rounded-lg"
-                >
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  <p className="text-sm">New book "The Great Gatsby" was added</p>
-                  <span className="ml-auto text-xs text-gray-500">2 hours ago</span>
-                </motion.div>
-                
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="flex items-center p-3 bg-gray-50 rounded-lg"
-                >
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                  <p className="text-sm">User John Doe borrowed "To Kill a Mockingbird"</p>
-                  <span className="ml-auto text-xs text-gray-500">5 hours ago</span>
-                </motion.div>
-                
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="flex items-center p-3 bg-gray-50 rounded-lg"
-                >
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3"></div>
-                  <p className="text-sm">Monthly report generated</p>
-                  <span className="ml-auto text-xs text-gray-500">1 day ago</span>
-                </motion.div>
+            <div className="space-y-10">
+              {/* Charts */}
+              <div>
+                <h2 className="text-xl font-semibold text-gray-800 mb-6">Analytics</h2>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Pie */}
+                  <div className="bg-gray-50 p-4 rounded-lg shadow">
+                    <h3 className="text-md font-semibold text-gray-700 mb-4">Books Distribution</h3>
+                    <ResponsiveContainer width="100%" height={250}>
+                      <PieChart>
+                        <Pie data={[
+                          { name: "Available", value: stats.availableBooks },
+                          { name: "Borrowed", value: stats.borrowedBooks },
+                        ]} cx="50%" cy="50%" outerRadius={80} dataKey="value" label>
+                          <Cell fill="#34D399" />
+                          <Cell fill="#F59E0B" />
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* Bar */}
+                  <div className="bg-gray-50 p-4 rounded-lg shadow">
+                    <h3 className="text-md font-semibold text-gray-700 mb-4">Overview</h3>
+                    <ResponsiveContainer width="100%" height={250}>
+                      <BarChart data={[
+                        { name: "Books", value: stats.totalBooks },
+                        { name: "Members", value: stats.totalMembers },
+                        { name: "Borrowed", value: stats.borrowedBooks },
+                      ]}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="value" fill="#6366F1" radius={[6,6,0,0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* Line */}
+                  <div className="bg-gray-50 p-4 rounded-lg shadow">
+                    <h3 className="text-md font-semibold text-gray-700 mb-4">Monthly Growth</h3>
+                    <ResponsiveContainer width="100%" height={250}>
+                      <LineChart data={monthlyData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="books" stroke="#3B82F6" strokeWidth={2} />
+                        <Line type="monotone" dataKey="members" stroke="#10B981" strokeWidth={2} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+
+              {/* Books Glimpse */}
+              <div>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Books</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {books.slice(0, 6).map((book) => (
+                    <motion.div key={book.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="bg-white border rounded-lg p-4 shadow hover:shadow-lg transition-shadow">
+                      <h3 className="text-lg font-bold text-gray-800">{book.title}</h3>
+                      <p className="text-sm text-gray-500 mb-2">{book.author}</p>
+                      <img src={book.image} alt="" style={{height:"300px ",width:"100%",objectFit:"cover"}} />
+                      <span className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${
+                        book.status === "available" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
+                      }`}>
+                        {book.status}
+                      </span>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Members Glimpse */}
+              <div>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Members</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {members.slice(0, 6).map((member) => (
+                    <motion.div key={member.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="bg-white border rounded-lg p-4 shadow hover:shadow-lg transition-shadow">
+                      <h3 className="text-lg font-bold text-gray-800">{member.name}</h3>
+                      <img src={member.image} alt="" style={{height:"300px ",width:"100%",objectFit:"cover",borderRadius:"8px"}} />
+                      <p className="text-dark text-black-500">📧 {member.firstName} {member.lastName}</p>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
-          
-          {/* Placeholder content for Reservations and Fines */}
+
+          {/* Reservations */}
           {activeTab === 'reservations' && (
             <div>
               <h2 className="text-2xl font-bold mb-4">Reservations Management</h2>
@@ -315,7 +333,8 @@ const Dashboard = () => {
               </div>
             </div>
           )}
-          
+
+          {/* Fines */}
           {activeTab === 'fines' && (
             <div>
               <h2 className="text-2xl font-bold mb-4">Fines Management</h2>
