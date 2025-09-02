@@ -2,7 +2,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './componets/dashboard/Dashboard';
-import BookList from './componets/bookList/BookList';
+import BookList from './componets/Booklist/BookList';
+import BookDetails from "./componets/Booklist/BookDetails";
 import MemberList from './componets/memberList/MemberList';
 import Reports from './componets/Reports';
 import Settings from './componets/Settings';
@@ -24,6 +25,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<DashboardDefaultContent />} />
             <Route path="books" element={<BookList />} />
+            <Route path="books/:id" element={<BookDetails />} />
             <Route path="members" element={<MemberList />} />
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<Settings />} />

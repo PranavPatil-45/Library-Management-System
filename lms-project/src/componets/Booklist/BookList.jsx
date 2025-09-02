@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteBook } from '../../slices/bookSlice';
+import { Link } from "react-router-dom";
+
 
 const BookList = () => {
   const { books, status, error } = useSelector((state) => state.books);
@@ -55,9 +57,12 @@ const BookList = () => {
                 </h3>
                 <p className="text-gray-600 mb-6">by {book.author}</p>
 
-                <button className="w-full py-2 px-4 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors shadow-md hover:shadow-lg mb-3">
-                  View Details
-                </button>
+               <Link
+  to={`/dashboard/books/${book.id}`}
+  className="block w-full text-center py-2 px-4 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors shadow-md hover:shadow-lg mb-3"
+>
+  View Details
+</Link>
 
                 <button
                   className="w-full py-2 px-4 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition-colors shadow-md hover:shadow-lg"
