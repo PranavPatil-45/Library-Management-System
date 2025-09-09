@@ -7,8 +7,7 @@ import { deleteMember } from "../slices/membersSlice";
 import { fetchLoans, borrowBook, returnBook } from "../slices/loansSlice";
 import { fetchBooks } from "../slices/bookSlice";
 import { fetchMembers } from "../slices/membersSlice";
-import { addFine } from "../slices/fineSlice"; // new fine slice
-
+import { addFine, setFines } from "../slices/fineSlice";
 
 const MemberDescription = () => {
   const { id } = useParams();
@@ -29,9 +28,11 @@ const MemberDescription = () => {
     return d.toISOString().slice(0, 10);
   });
 
+  const [collectedTotal, setCollectedTotal] = useState(0);
+
   useEffect(() => {
-    if (!books || books.length === 0) dispatch(fetchBooks());
-    if (!members || members.length === 0) dispatch(fetchMembers());
+    if (!books?.length) dispatch(fetchBooks());
+    if (!members?.length) dispatch(fetchMembers());
     dispatch(fetchLoans());
   }, [dispatch]);
 
@@ -54,8 +55,13 @@ const MemberDescription = () => {
       return { loan, book };
     });
 
-// Removed duplicate handleAddFine function to resolve redeclaration error
-  const memberFines = fines.filter((f) => String(f.memberId) === String(id));
+  // Show both unpaid and paid fines
+  const memberFines = fines
+    .filter((f) => String(f.memberId) === String(id))
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  const unpaidFines = memberFines.filter(f => !f.collected);
+  const totalUnpaid = unpaidFines.reduce((sum, f) => sum + f.amount, 0);
 
   const handleDelete = async () => {
     if (!member) return;
@@ -98,7 +104,6 @@ const MemberDescription = () => {
     try {
       await dispatch(returnBook({ loanId, bookId })).unwrap();
 
-      // Add automatic fine for late return
       if (lateDays > 0) {
         await dispatch(
           addFine({
@@ -107,6 +112,7 @@ const MemberDescription = () => {
             reason: `Late return (${lateDays} days)`,
             amount: lateDays * 20,
             date: new Date().toISOString(),
+            collected: false
           })
         );
       }
@@ -127,12 +133,30 @@ const MemberDescription = () => {
           reason,
           amount: Number(amount),
           date: new Date().toISOString(),
+          collected: false
         })
       );
       alert("Fine added successfully!");
     } catch (err) {
       alert("Failed to add fine: " + (err?.message || err));
     }
+  };
+
+  const handleCollectFines = () => {
+    const updatedFines = fines.map(f => {
+      if (String(f.memberId) === String(id) && !f.collected) {
+        return { ...f, collected: true };
+      }
+      return f;
+    });
+    dispatch(setFines(updatedFines));
+
+    const collected = fines
+      .filter(f => String(f.memberId) === String(id) && !f.collected)
+      .reduce((sum, f) => sum + f.amount, 0);
+
+    setCollectedTotal(prev => prev + collected);
+    alert(`Collected ₹${collected} from member.`);
   };
 
   if (!member) {
@@ -178,13 +202,13 @@ const MemberDescription = () => {
 
           {/* Body */}
           <div className="p-6">
+            {/* Member info */}
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-shrink-0">
                 <div className="w-32 h-32 bg-indigo-100 rounded-full flex items-center justify-center overflow-hidden">
                   {member.image ? <img src={member.image} alt={member.firstName} className="w-32 h-32 rounded-full object-cover" /> : <span className="text-5xl text-indigo-600">👤</span>}
                 </div>
               </div>
-
               <div className="flex-grow">
                 <h2 className="text-3xl font-bold text-gray-800 mb-2">{member.firstName} {member.lastName}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
@@ -197,10 +221,9 @@ const MemberDescription = () => {
               </div>
             </div>
 
-            {/* Active borrowed books */}
+            {/* Borrowed books */}
             <div className="mt-8 pt-6 border-t border-gray-200">
               <h3 className="text-xl font-semibold text-gray-800 mb-4">Borrowed Books ({borrowedDetails.length})</h3>
-
               {borrowedDetails.length === 0 ? (
                 <p className="text-gray-500">This member hasn't borrowed any books.</p>
               ) : (
@@ -216,9 +239,8 @@ const MemberDescription = () => {
                           <span>Due: <b>{loan.dueDate}</b></span>
                         </div>
                       </div>
-
                       <div className="ml-4 flex flex-col gap-2">
-                        <Link to={`/dashboard/book/${loan.bookId}`} className="text-indigo-600 hover:text-indigo-800 text-sm">View</Link>
+                        <Link to={`/dashboard/books/${loan.bookId}`} className="text-indigo-600 hover:text-indigo-800 text-sm">View</Link>
                         <button onClick={() => handleReturn(loan.id, loan.bookId)} className="text-sm px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700">Return</button>
                         <button onClick={() => handleAddFine(loan.bookId, "Damage", 50)} className="text-sm px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700">Fine for Damage</button>
                       </div>
@@ -230,7 +252,14 @@ const MemberDescription = () => {
 
             {/* Fine history */}
             <div className="mt-8 pt-6 border-t border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">Fine History</h3>
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-lg font-semibold text-gray-800">Fine History</h3>
+                {totalUnpaid > 0 && (
+                  <button onClick={handleCollectFines} className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm">
+                    Collect Fine (₹{totalUnpaid})
+                  </button>
+                )}
+              </div>
               {memberFines.length === 0 ? (
                 <p className="text-gray-500">No fines yet.</p>
               ) : (
@@ -238,12 +267,14 @@ const MemberDescription = () => {
                   {memberFines.map((f, idx) => {
                     const book = books.find((b) => String(b.id) === String(f.bookId));
                     return (
-                      <div key={idx} className="flex items-center justify-between bg-yellow-50 p-3 rounded">
+                      <div key={idx} className={`flex items-center justify-between p-3 rounded ${f.collected ? 'bg-gray-100' : 'bg-yellow-50'}`}>
                         <div>
                           <div className="font-medium text-gray-800">{book ? book.title : `Book #${f.bookId}`}</div>
                           <div className="text-sm text-gray-500">{f.reason} | {new Date(f.date).toLocaleDateString()}</div>
                         </div>
-                        <div className="font-semibold text-gray-700">₹{f.amount}</div>
+                        <div className={`font-semibold text-gray-700 ${f.collected ? 'text-green-600' : 'text-red-600'}`}>
+                          ₹{f.amount}
+                        </div>
                       </div>
                     );
                   })}
