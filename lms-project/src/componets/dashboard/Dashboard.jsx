@@ -8,12 +8,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Bookmark, CreditCard } from "lucide-react";
 import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
 import { fetchMembers } from './../../slices/membersSlice';
-import { fetchBooks } from '../../slices/bookSlice';    
+import { fetchBooks } from '../../slices/bookSlice';
 import {
   ResponsiveContainer, PieChart, Pie, Cell,
   BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip,
   LineChart, Line, Legend
 } from "recharts";
+import Fines from '../Fines';
 
 const Dashboard = () => {
   const { books } = useSelector((state) => state.books);
@@ -21,7 +22,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [stats, setStats] = useState({
     totalBooks: 0,
@@ -30,26 +31,26 @@ const Dashboard = () => {
     totalMembers: 0
   });
 
-  // Get active tab
+  // Active Tab
   const pathSegments = location.pathname.split('/');
   const activeTab = pathSegments[pathSegments.length - 1] || 'dashboard';
 
-  // Fetch members & books
+  // Fetch data
   useEffect(() => {
     dispatch(fetchMembers());
     dispatch(fetchBooks());
   }, [dispatch]);
 
-  // Calculate stats
+  // ✅ Recalculate stats whenever books/members change
   useEffect(() => {
     if (books) {
       const totalBooks = books.length;
-      const availableBooks = books.filter(book => book.status === 'available').length;
-      const borrowedBooks = books.filter(book => book.status === 'borrowed').length;
+      const availableBooks = books.filter(book => book.isAvailable === true).length;
+      const borrowedBooks = books.filter(book => book.isAvailable === false).length;
       const totalMembers = members.length;
-      
+
       setStats({
-        totalBooks, 
+        totalBooks,
         availableBooks,
         borrowedBooks,
         totalMembers,
@@ -80,8 +81,22 @@ const Dashboard = () => {
     { id: 'reservations', label: "Reservations", icon: <Bookmark className="w-5 h-5" />, path: '/dashboard/reservations' },
     { id: 'fines', label: "Fines", icon: <CreditCard className="w-5 h-5" />, path: '/dashboard/fines' },
   ];
+  // inside Dashboard component
 
-  // Dummy monthly trend for line chart
+const [selectedStat, setSelectedStat] = useState(null); // "available" | "borrowed" | null
+
+// Function to filter books based on selection
+const getFilteredBooks = () => {
+  if (selectedStat === "available") {
+    return books.filter(book => book.isAvailable);
+  }
+  if (selectedStat === "borrowed") {
+    return books.filter(book => !book.isAvailable);
+  }
+  return [];
+};
+
+
   const monthlyData = [
     { month: 'Jan', books: 20, members: 10 },
     { month: 'Feb', books: 35, members: 15 },
@@ -93,10 +108,10 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex bg-gray-50">
-      {/* Mobile Overlay */}
+      {/* Overlay */}
       <AnimatePresence>
         {isSidebarOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}
             exit={{ opacity: 0 }}
@@ -107,7 +122,7 @@ const Dashboard = () => {
       </AnimatePresence>
 
       {/* Sidebar */}
-      <motion.aside 
+      <motion.aside
         variants={sidebarVariants}
         initial="open"
         animate={isSidebarOpen ? "open" : "closed"}
@@ -115,17 +130,17 @@ const Dashboard = () => {
           ${isSidebarOpen ? 'w-64' : 'w-0 lg:w-16'}`}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-indigo-600">
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
             className="text-xl font-bold tracking-tight flex items-center"
           >
-            <span className="mr-2">📚</span> 
+            <span className="mr-2">📚</span>
             {isSidebarOpen && <span>BookDash Admin</span>}
           </motion.h2>
           {isSidebarOpen && (
-            <button 
+            <button
               className="p-2 rounded-lg hover:bg-indigo-600 transition-colors"
               onClick={toggleSidebar}
             >
@@ -149,7 +164,7 @@ const Dashboard = () => {
         </nav>
 
         <div className="px-3 py-4 border-t border-indigo-600">
-          <button 
+          <button
             className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-indigo-600 transition-colors cursor-pointer w-full"
             onClick={() => navigate('/login')}
           >
@@ -161,7 +176,6 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <main className={`flex-1 p-8 overflow-y-auto transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : 'lg:ml-16'}`}>
-        {/* Floating Menu */}
         {!isSidebarOpen && (
           <motion.button
             initial={{ opacity: 0, x: -10 }}
@@ -179,7 +193,7 @@ const Dashboard = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center">
-            <button 
+            <button
               className="p-2 mr-4 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow lg:hidden"
               onClick={toggleSidebar}
             >
@@ -189,9 +203,9 @@ const Dashboard = () => {
               {activeTab.charAt().toUpperCase() + activeTab.slice(1)} Overview
             </h1>
           </div>
-          
+
           {(activeTab === 'books' || activeTab === 'members') && (
-            <Link 
+            <Link
               to={activeTab === 'books' ? '/dashboard/add-book' : '/dashboard/manage-members'}
               className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-700 transition-colors"
             >
@@ -201,40 +215,111 @@ const Dashboard = () => {
           )}
         </div>
 
-        {/* Stats Cards */}
-        {activeTab === 'dashboard' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <motion.div variants={statCardVariants} initial="hidden" animate="visible" className="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
-              <h3 className="text-gray-500 text-sm font-semibold mb-2">Total Books</h3>
-              <p className="text-3xl font-bold text-gray-800">{stats.totalBooks}</p>
-            </motion.div>
-            <motion.div variants={statCardVariants} initial="hidden" animate="visible" transition={{ delay: 0.1 }} className="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
-              <h3 className="text-gray-500 text-sm font-semibold mb-2">Available Books</h3>
-              <p className="text-3xl font-bold text-gray-800">{stats.availableBooks}</p>
-            </motion.div>
-            <motion.div variants={statCardVariants} initial="hidden" animate="visible" transition={{ delay: 0.2 }} className="bg-white p-6 rounded-xl shadow-md border-l-4 border-yellow-500">
-              <h3 className="text-gray-500 text-sm font-semibold mb-2">Borrowed Books</h3>
-              <p className="text-3xl font-bold text-gray-800">{stats.borrowedBooks}</p>
-            </motion.div>
-            <motion.div variants={statCardVariants} initial="hidden" animate="visible" transition={{ delay: 0.3 }} className="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
-              <h3 className="text-gray-500 text-sm font-semibold mb-2">Total Members</h3>
-              <p className="text-3xl font-bold text-gray-800">{stats.totalMembers}</p>
-            </motion.div>
-          </div>
-        )}
+        {/* Stats */}
+        {/* Stats */}
+{activeTab === 'dashboard' && (
+  <div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <motion.div
+        variants={statCardVariants}
+        initial="hidden"
+        animate="visible"
+        className="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500 cursor-pointer hover:bg-blue-50 transition"
+        onClick={() => setSelectedStat("all")}
+      >
+        <h3 className="text-gray-500 text-sm font-semibold mb-2">Total Books</h3>
+        <p className="text-3xl font-bold text-gray-800">{stats.totalBooks}</p>
+      </motion.div>
 
-        {/* Content */}
+      <motion.div
+        variants={statCardVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.1 }}
+        className="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500 cursor-pointer hover:bg-green-50 transition"
+        onClick={() => setSelectedStat("available")}
+      >
+        <h3 className="text-gray-500 text-sm font-semibold mb-2">Available Books</h3>
+        <p className="text-3xl font-bold text-gray-800">{stats.availableBooks}</p>
+      </motion.div>
+
+      <motion.div
+        variants={statCardVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.2 }}
+        className="bg-white p-6 rounded-xl shadow-md border-l-4 border-yellow-500 cursor-pointer hover:bg-yellow-50 transition"
+        onClick={() => setSelectedStat("borrowed")}
+      >
+        <h3 className="text-gray-500 text-sm font-semibold mb-2">Borrowed Books</h3>
+        <p className="text-3xl font-bold text-gray-800">{stats.borrowedBooks}</p>
+      </motion.div>
+
+      <motion.div
+        variants={statCardVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.3 }}
+        className="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500"
+      >
+        <h3 className="text-gray-500 text-sm font-semibold mb-2">Total Members</h3>
+        <p className="text-3xl font-bold text-gray-800">{stats.totalMembers}</p>
+      </motion.div>
+    </div>
+
+    {/* Show Filtered Books */}
+    {selectedStat && (
+      <div className="bg-white p-6 rounded-xl shadow-md mb-8">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-bold text-gray-800">
+            {selectedStat === "available" && "Available Books"}
+            {selectedStat === "borrowed" && "Borrowed Books"}
+            {selectedStat === "all" && "All Books"}
+          </h3>
+          <button
+            onClick={() => setSelectedStat(null)}
+            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm"
+          >
+            Close
+          </button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {getFilteredBooks().map((book) => (
+            <div key={book.id} className="bg-gray-50 p-4 rounded-lg shadow">
+              <h4 className="font-bold text-gray-800">{book.title}</h4>
+              <p className="text-sm text-gray-500 mb-2">{book.author}</p>
+              <img
+                src={book.image}
+                alt={book.title}
+                className="w-full h-40 object-cover rounded mb-2"
+              />
+              <span
+                className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${
+                  book.isAvailable
+                    ? "bg-green-100 text-green-700"
+                    : "bg-yellow-100 text-yellow-700"
+                }`}
+              >
+                {book.isAvailable ? "Available" : "Borrowed"}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+)}
+
+        {/* Dashboard Charts */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="bg-white p-6 rounded-xl shadow-md">
           {activeTab !== 'dashboard' && activeTab !== 'reservations' && activeTab !== 'fines' && <Outlet />}
-          
-          {/* Dashboard Content */}
+
           {activeTab === 'dashboard' && (
             <div className="space-y-10">
               {/* Charts */}
               <div>
                 <h2 className="text-xl font-semibold text-gray-800 mb-6">Analytics</h2>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Pie */}
                   <div className="bg-gray-50 p-4 rounded-lg shadow">
                     <h3 className="text-md font-semibold text-gray-700 mb-4">Books Distribution</h3>
                     <ResponsiveContainer width="100%" height={250}>
@@ -251,7 +336,6 @@ const Dashboard = () => {
                     </ResponsiveContainer>
                   </div>
 
-                  {/* Bar */}
                   <div className="bg-gray-50 p-4 rounded-lg shadow">
                     <h3 className="text-md font-semibold text-gray-700 mb-4">Overview</h3>
                     <ResponsiveContainer width="100%" height={250}>
@@ -269,7 +353,6 @@ const Dashboard = () => {
                     </ResponsiveContainer>
                   </div>
 
-                  {/* Line */}
                   <div className="bg-gray-50 p-4 rounded-lg shadow">
                     <h3 className="text-md font-semibold text-gray-700 mb-4">Monthly Growth</h3>
                     <ResponsiveContainer width="100%" height={250}>
@@ -287,7 +370,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Books Glimpse */}
+              {/* Recent Books */}
               <div>
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Books</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -295,25 +378,25 @@ const Dashboard = () => {
                     <motion.div key={book.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="bg-white border rounded-lg p-4 shadow hover:shadow-lg transition-shadow">
                       <h3 className="text-lg font-bold text-gray-800">{book.title}</h3>
                       <p className="text-sm text-gray-500 mb-2">{book.author}</p>
-                      <img src={book.image} alt="" style={{height:"300px ",width:"100%",objectFit:"cover"}} />
+                      <img src={book.image} alt="" style={{height:"300px", width:"100%", objectFit:"cover"}} />
                       <span className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${
-                        book.status === "available" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
+                        book.isAvailable ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
                       }`}>
-                        {book.status}
+                        {book.isAvailable ? "Available" : "Borrowed"}
                       </span>
                     </motion.div>
                   ))}
                 </div>
               </div>
 
-              {/* Members Glimpse */}
+              {/* Recent Members */}
               <div>
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Members</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {members.slice(0, 6).map((member) => (
                     <motion.div key={member.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="bg-white border rounded-lg p-4 shadow hover:shadow-lg transition-shadow">
                       <h3 className="text-lg font-bold text-gray-800">{member.name}</h3>
-                      <img src={member.image} alt="" style={{height:"300px ",width:"100%",objectFit:"cover",borderRadius:"8px"}} />
+                      <img src={member.image} alt="" style={{height:"300px", width:"100%", objectFit:"cover", borderRadius:"8px"}} />
                       <p className="text-dark text-black-500">📧 {member.firstName} {member.lastName}</p>
                     </motion.div>
                   ))}
@@ -336,14 +419,7 @@ const Dashboard = () => {
 
           {/* Fines */}
           {activeTab === 'fines' && (
-            <div>
-              <h2 className="text-2xl font-bold mb-4">Fines Management</h2>
-              <p className="text-gray-600">This section will contain all fine-related information and payment processing.</p>
-              <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">Coming Soon</h3>
-                <p>Fine management features are currently under development.</p>
-              </div>
-            </div>
+            <Fines />
           )}
         </motion.div>
       </main>

@@ -14,6 +14,8 @@ import Home from './screens/Home';
 import Reservation from './componets/Reservation';
 import Fines from './componets/Fines';
 import MemberDescription from './componets/MembersDesc';
+import Login from './componets/Login';
+import EditMember from './componets/memberList/EditMember';
 import './App.css';
 
 function App() {
@@ -22,6 +24,9 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/" element={<Login />} />
+      <Route path="/login" element={<Login />} />
+          <Route path="/dashboard/member/:id/edit" element={<EditMember />} />
           <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<DashboardDefaultContent />} />
             <Route path="books" element={<BookList />} />

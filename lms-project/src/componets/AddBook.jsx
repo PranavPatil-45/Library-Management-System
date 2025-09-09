@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { FiArrowLeft, FiUpload, FiX } from 'react-icons/fi';
+import { FiArrowLeft } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addBook } from '../slices/bookSlice';
 
 const AddBook = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     title: '',
     author: '',
@@ -15,29 +19,16 @@ const AddBook = () => {
     pageCount: '',
     language: '',
     status: 'available',
-    coverImage: null,
+    image: '', // ✅ changed key from coverImage → image
     totalCopies: 1,
     availableCopies: 1
   });
 
-  const [imagePreview, setImagePreview] = useState(null);
-
   const categories = [
-    'Fiction',
-    'Non-Fiction',
-    'Science Fiction',
-    'Fantasy',
-    'Mystery',
-    'Thriller',
-    'Romance',
-    'Biography',
-    'History',
-    'Science',
-    'Self-Help',
-    'Children',
-    'Young Adult',
-    'Poetry',
-    'Drama'
+    'Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy',
+    'Mystery', 'Thriller', 'Romance', 'Biography',
+    'History', 'Science', 'Self-Help', 'Children',
+    'Young Adult', 'Poetry', 'Drama'
   ];
 
   const handleChange = (e) => {
@@ -48,38 +39,16 @@ const AddBook = () => {
     }));
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData(prev => ({
-        ...prev,
-        coverImage: file
-      }));
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const removeImage = () => {
-    setFormData(prev => ({
-      ...prev,
-      coverImage: null
-    }));
-    setImagePreview(null);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically dispatch an action to add the book to your store/API
-    console.log('Book data:', formData);
-    
-    // Simulate successful addition
-    alert('Book added successfully!');
-    navigate('/dashboard/books');
+    try {
+      await dispatch(addBook(formData)).unwrap();
+      alert('Book added successfully!');
+      navigate('/dashboard/books');
+    } catch (error) {
+      console.error("Error adding book:", error);
+      alert("Failed to add book.");
+    }
   };
 
   const handleCancel = () => {
@@ -201,45 +170,27 @@ const AddBook = () => {
 
           {/* Right Column */}
           <div className="space-y-4">
-            {/* Cover Image Upload */}
+            {/* Image URL instead of Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Cover Image
+                Image URL *
               </label>
-              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                {imagePreview ? (
-                  <div className="relative">
-                    <img
-                      src={imagePreview}
-                      alt="Book cover preview"
-                      className="max-h-48 rounded-md"
-                    />
-                    <button
-                      type="button"
-                      onClick={removeImage}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
-                    >
-                      <FiX size={16} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-1 text-center">
-                    <FiUpload className="mx-auto h-12 w-12 text-gray-400" />
-                    <div className="flex text-sm text-gray-600">
-                      <label className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500">
-                        <span>Upload an image</span>
-                        <input
-                          type="file"
-                          className="sr-only"
-                          accept="image/*"
-                          onChange={handleImageChange}
-                        />
-                      </label>
-                    </div>
-                    <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                  </div>
-                )}
-              </div>
+              <input
+                type="url"
+                name="image"
+                value={formData.image}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Enter image link (e.g. https://...)"
+              />
+              {formData.image && (
+                <img
+                  src={formData.image}
+                  alt="Preview"
+                  className="mt-2 max-h-40 rounded-md border"
+                />
+              )}
             </div>
 
             {/* Page Count */}

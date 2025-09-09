@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiArrowLeft, FiUser, FiMail, FiPhone, FiMapPin, FiCalendar } from 'react-icons/fi';
-import { fetchMembers } from '../slices/membersSlice';
+  import { fetchMembers } from '../slices/membersSlice';
 const AddMember = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
