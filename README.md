@@ -78,12 +78,16 @@ App will run at 👉 `http://localhost:3000`
 
 ### 🏠 Dashboard
 
+<img width="1873" height="907" alt="dashboard" src="https://github.com/user-attachments/assets/42d484e3-2391-4a1b-b38d-263876c26f45" />
 
 
 👤 Member Details
 
 
+<img width="1875" height="921" alt="members" src="https://github.com/user-attachments/assets/e2bccf41-fb20-4f85-910d-91d70cd7c9d5" />
 
+#Books
+<img width="1877" height="917" alt="bookks" src="https://github.com/user-attachments/assets/433b7382-ea68-4799-84f9-105d0e4a36e5" />
 
 
  🚀 Future Enhancements
