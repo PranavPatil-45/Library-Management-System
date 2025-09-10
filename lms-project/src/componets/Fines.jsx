@@ -124,7 +124,7 @@ const FineReport = () => {
                   return (
                     <tr key={idx} className="text-center">
                       <td className="p-2 border">{book?.title || `Book #${f.bookId}`}</td>
-                      <td className="p-2 border text-indigo-600">{book?.isbn || "N/A"}</td>
+                      <td className="p-2 border text-indigo-600">{book?.isbn.join(" , ") || "N/A"}</td>
                       <td className="p-2 border">{f.reason}</td>
                       <td className="p-2 border font-medium text-red-600">₹{f.amount}</td>
                       <td className="p-2 border">{new Date(f.date).toLocaleDateString()}</td>

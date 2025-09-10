@@ -14,7 +14,7 @@
         "9780451524939",
         "9780451524940"
       ],
-      "isAvailable": false,
+      "isAvailable": true,
       "rent": 63,
       "image": "https://tse4.mm.bing.net/th/id/OIP.8bTpGDLEYVpDlV8tD10XlQAAAA?rs=1&pid=ImgDetMain&o=7&rm=3"
     },
@@ -32,7 +32,7 @@
         "9781451673323",
         "9781451673324"
       ],
-      "isAvailable": false,
+      "isAvailable": true,
       "rent": 58,
       "image": "https://cdn.kobo.com/book-images/5b0e8d40-d40b-4ef3-a7a2-819e4b065f5c/1200/1200/False/fahrenheit-451-2.jpg"
     },
@@ -140,7 +140,7 @@
         "9780345391807",
         "9780345391808"
       ],
-      "isAvailable": true,
+      "isAvailable": false,
       "rent": 69,
       "image": "https://tse3.mm.bing.net/th/id/OIP.6lE_KV_vkckc3Ey-TSvHuwHaLJ?rs=1&pid=ImgDetMain&o=7&rm=3"
     },
@@ -529,9 +529,7 @@
       "membershipType": "faculty",
       "joinDate": "",
       "status": "active",
-      "borrowedBooks": [
-        "6"
-      ],
+      "borrowedBooks": [],
       "reservations": []
     },
     {
@@ -576,9 +574,7 @@
       "membershipType": "student",
       "joinDate": "",
       "status": "active",
-      "borrowedBooks": [
-        "3"
-      ],
+      "borrowedBooks": [],
       "reservations": []
     },
     {
@@ -593,7 +589,9 @@
       "membershipType": "faculty",
       "joinDate": "",
       "status": "active",
-      "borrowedBooks": [],
+      "borrowedBooks": [
+        "13"
+      ],
       "reservations": []
     },
     {
@@ -623,9 +621,7 @@
       "membershipType": "faculty",
       "joinDate": "",
       "status": "active",
-      "borrowedBooks": [
-        "6"
-      ],
+      "borrowedBooks": [],
       "reservations": []
     },
     {
@@ -1249,7 +1245,7 @@
       "memberId": "34",
       "startDate": "2025-09-09",
       "dueDate": "2025-09-16",
-      "returnDate": null
+      "returnDate": "2025-09-09"
     },
     {
       "id": "1830",
@@ -1273,7 +1269,7 @@
       "memberId": "40",
       "startDate": "2025-09-09",
       "dueDate": "2025-09-16",
-      "returnDate": null
+      "returnDate": "2025-09-09"
     },
     {
       "id": "a417",
@@ -1281,6 +1277,22 @@
       "memberId": "37",
       "startDate": "2025-09-09",
       "dueDate": "2025-09-16",
+      "returnDate": "2025-09-09"
+    },
+    {
+      "id": "f7a2",
+      "bookId": "13",
+      "memberId": "M9KK3J59NP",
+      "startDate": "2025-09-10",
+      "dueDate": "2025-09-16",
+      "returnDate": "2025-09-10"
+    },
+    {
+      "id": "276c",
+      "bookId": "13",
+      "memberId": "38",
+      "startDate": "2025-09-10",
+      "dueDate": "2025-09-17",
       "returnDate": null
     }
   ]
