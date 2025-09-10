@@ -21,7 +21,8 @@ This project helps librarians manage members, books, loans, and fines** with an 
 - 📊 **Reports** – Member activity, borrowed history, and fine reports.  
 - 🎨 **Modern UI** – Responsive design built with **Tailwind CSS**.  
 
-
+## Video Of Our Project 
+[View Video](https://drive.google.com/file/d/1jwR22OW9HG9MNW5x1lHVztBferRp-gZV/view?usp=sharing) 
 
 ## 🛠️ Tech Stack  
 
